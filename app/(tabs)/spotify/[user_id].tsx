@@ -1,5 +1,9 @@
-import { View, Text, Button, FlatList, Image } from 'react-native'
+import { View, Text, Button, FlatList, Image, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, useLocalSearchParams } from 'expo-router';
+
+//this is the spotify page, this is where users will be able to seach and favorite songs
 
 const CLIENT_ID = "9f775d066d7c4ea3b25d5c58a42ce2f9";
 const CLIENT_SECRET = "db8b9bd3f6644c78a1292403147dbfff";
@@ -7,11 +11,13 @@ const CLIENT_SECRET = "db8b9bd3f6644c78a1292403147dbfff";
 
 const SpotifyComponent = () => {
 
-    const [searchInput, setsearchInput] = useState("man in the mirror");
+
+    //useStates for getting input, acess token, and the info about the tracks that were searched
+    const [searchInput, setsearchInput] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [tracksInfo, setTracksInfo] = useState<Track[]>([]);
     
-
+    //this useEffect will get us an acess token for the spotify api
     useEffect(() => {
 
         var authParams = {
@@ -31,6 +37,7 @@ const SpotifyComponent = () => {
             
     }, []);
 
+    //had to do this weird interface thing for typescript
     interface Track {
         name: string;
         id: string;
@@ -38,8 +45,11 @@ const SpotifyComponent = () => {
         image: string;
     }
 
+
+    //search function that will actually search for songs in the api
     async function search() {
         console.log("Search for " + searchInput);
+        if (!searchInput) return;
 
 
         var trackParams = {
@@ -54,6 +64,8 @@ const SpotifyComponent = () => {
         const tracks = data.tracks.items;
         console.log(tracks[0].album.images[0].url);
 
+
+        //going through the data recieved from the api and pushing in into an array
         let trackList: Track[] = [];
         for(let i = 0; i<tracks.length;i++){
             trackList.push({
@@ -64,16 +76,27 @@ const SpotifyComponent = () => {
             });
         };
 
-        setTracksInfo(trackList);
+        setTracksInfo(trackList); //using the useState at the top of the class to update it with the array of data we just got
         //console.log("track list:" + trackList);
 
     }
 
+    const {user_id} = useLocalSearchParams(); //to get the passed in user id
+
   return (
-    <View>
-      <Text>SpotifyComponent</Text>
-      <Button title="Search" onPress={() => search()} />
-    
+    <SafeAreaView>
+      <Text>This is the Spotify API</Text>
+      <Link href='/'>Go Back</Link>
+      <Text>User ID that was passed in: {user_id}</Text>
+      
+
+      <TextInput
+        placeholder="Search for a song"
+        value={searchInput}
+        onChangeText={setsearchInput} // Update the searchInput state
+      />
+
+       <Button title="Search" onPress={search} />
 
         <FlatList
 
@@ -99,7 +122,7 @@ const SpotifyComponent = () => {
         }
         />
 
-    </View>
+    </SafeAreaView>
 
   );
 }

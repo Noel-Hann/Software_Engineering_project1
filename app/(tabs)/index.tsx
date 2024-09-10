@@ -117,7 +117,8 @@ export default function HomeScreen() {
         visible={isSignInModalVisible}
         style={styles.modalBackground}
         animationType="slide"
-        presentationStyle="pageSheet"
+        // presentationStyle="pageSheet"
+        transparent={true}
       >
         <SafeAreaView style={styles.modalContainer}>
           <View style={styles.horzFlex}>
@@ -160,7 +161,8 @@ export default function HomeScreen() {
         visible={isCreateAccountModalVisible}
         style={styles.modalBackground}
         animationType="slide"
-        presentationStyle="pageSheet"
+        // presentationStyle="pageSheet"
+        transparent={true}
       >
         <SafeAreaView style={styles.modalContainer}>
           <View style={styles.horzFlex}>
@@ -235,6 +237,8 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     backgroundColor: "#303030",
+    borderTopStartRadius: 25,
+    borderTopEndRadius: 25,
   },
   bottomContainer: {
     left: 0,

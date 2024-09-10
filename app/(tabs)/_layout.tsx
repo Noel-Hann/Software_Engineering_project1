@@ -22,6 +22,7 @@ const RootLayout = () => {
         name="spotify/[user_id]"
         options={{
           headerTitle: "Spotify API Page",
+          headerShown: false,
         }}
       />
     </Stack>

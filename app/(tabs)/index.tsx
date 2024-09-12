@@ -546,6 +546,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     // alignItems: "flex-start",
     justifyContent: "center",
+    textAlign: "center",
   },
   lineSeprator: {
     height: 3,

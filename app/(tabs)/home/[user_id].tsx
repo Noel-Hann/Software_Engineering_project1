@@ -1,8 +1,16 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React from "react";
+import React,  { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
 import { SLOPE_FACTOR } from "react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils";
+import { useSQLiteContext } from "expo-sqlite";
+        
+interface User {
+  id: number;
+  username: string;
+  password: string;
+}
+
 
 const Home = () => {
   const { user_id } = useLocalSearchParams();
@@ -29,6 +37,29 @@ const Home = () => {
         </SafeAreaView>
     </SafeAreaView>
   );
+};
+
+const db = async () => {
+  console.log("is db in home screen");
+  const db = useSQLiteContext(); //getting context of sql db
+  const [users, setUsers] = useState<User[]>([]); //creating a user state of all users
+
+  console.log("Getting users... in home screen");
+  //function to get all users
+  const getUsers = async () => {
+    try {
+      const userRows = (await db.getAllAsync("SELECT * FROM users")) as User[];
+      setUsers(userRows);
+      console.log("Users row set: ", userRows);
+    } catch (error) {
+      console.log("Error while loading users : ", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("In useEffect for SIGN IN users db...");
+    getUsers();
+  }, []);
 };
 
 const styles = StyleSheet.create({

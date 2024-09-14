@@ -34,4 +34,6 @@ Instructions to run the project:
 5. Open the code editor's terminal
 6. npm start
 7. select your emulator/simulator of choice (you may have to have your emulator/simulator running before selecting it)
-8. Create An Account then Sign In with those credentials 
+8. Create An Account then Sign In with those credentials
+
+NOTE: Most important files that are worked on are located in app -> (tabs)

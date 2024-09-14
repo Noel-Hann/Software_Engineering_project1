@@ -36,6 +36,19 @@ async function initilizeDatabase(db: SQLiteAnyDatabase) {
       );
       `);
     console.log("Database initilised");
+
+    await db.execAsync(`
+      PRAGMA journal_mode = WAL;
+      CREATE TABLE IF NOT EXISTS fav_songs(
+        song_id TEXT,
+        user_id INTEGER,
+        song_name TEXT,
+        song_artist TEXT,
+        song_image TEXT,
+        PRIMARY KEY (song_id, user_id),
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      );
+      `);
   } catch (error) {
     console.log("Error while initizaling database :", error);
   }
@@ -281,6 +294,14 @@ interface User {
   password: string;
 }
 
+interface Songs {
+  song_id: string;
+  user_id: number;
+  song_name: string;
+  song_artist: string;
+  song_image: string;
+}
+
 interface NewUser {
   username: string;
   password: string;
@@ -298,6 +319,7 @@ const SignInContent: React.FC<SignInContentProps> = ({ closeSignInModal }) => {
   console.log("In signInContent");
   const db = useSQLiteContext(); //getting context of sql db
   const [users, setUsers] = useState<User[]>([]); //creating a user state of all users
+  const [songs, setSongs] = useState<Songs[]>([]);
 
   console.log("Getting users... in sign in");
   //function to get all users
@@ -311,9 +333,22 @@ const SignInContent: React.FC<SignInContentProps> = ({ closeSignInModal }) => {
     }
   };
 
+  const getSongs = async () => {
+    try {
+      const songRows = (await db.getAllAsync(
+        "SELECT * FROM fav_songs"
+      )) as Songs[];
+      setSongs(songRows);
+      console.log("Users song set: ", songRows);
+    } catch (error) {
+      console.log("Error while loading users : ", error);
+    }
+  };
+
   useEffect(() => {
     console.log("In useEffect for SIGN IN users db...");
     getUsers();
+    getSongs();
   }, []);
 
   const logInUser = async (

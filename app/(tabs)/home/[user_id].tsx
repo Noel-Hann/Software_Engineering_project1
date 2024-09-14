@@ -1,40 +1,37 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React,  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
 import { SLOPE_FACTOR } from "react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils";
 import { useSQLiteContext } from "expo-sqlite";
-        
+
 interface User {
   id: number;
   username: string;
   password: string;
 }
 
-
 const Home = () => {
   const { user_id } = useLocalSearchParams();
 
   return (
     <SafeAreaView style={styles.container}>
-      
-   <SafeAreaView style={styles.bottomContainer}>
-    <SafeAreaView style={styles.headingContainer}> 
-      <Text style={styles.homeTitle}>Home Page</Text>
-      <Text style={styles.buttonText}>User ID: {user_id}</Text>
-    </SafeAreaView>  
-
-      <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
-        <Text style={styles.buttonText}>
-        Search        
-        </Text>
-      </Link>
-      <Link href="/" style={styles.buttonStyle2}>
-        <Text style={styles.buttonText}>
-        Back
-        </Text>
-      </Link>
+      <SafeAreaView style={styles.bottomContainer}>
+        <SafeAreaView style={styles.headingContainer}>
+          <Text style={styles.homeTitle}>Home Page</Text>
+          <Text style={styles.buttonText}>User ID: {user_id}</Text>
         </SafeAreaView>
+
+        <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>Search</Text>
+        </Link>
+        <Link href={`/favorites/${user_id}`} style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>My Favorites</Text>
+        </Link>
+        <Link href="/" style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>Back</Text>
+        </Link>
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
@@ -69,10 +66,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     margin: 10,
     alignItems: "center",
-    height:"100%",
-
+    height: "100%",
   },
-  
+
   modalContainer: {
     position: "absolute",
     top: 0,
@@ -87,13 +83,12 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 25,
   },
 
-  headingContainer:{
+  headingContainer: {
     position: "absolute",
     top: 10,
     left: 0,
     right: 0,
     textAlign: "center",
-
   },
 
   bottomContainer: {
@@ -105,7 +100,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
     borderRadius: 20,
-    
   },
 
   buttonStyle2: {
@@ -114,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     margin: 10,
     borderRadius: 35,
-    textAlign:"center",
+    textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
     width: 300,
@@ -126,14 +120,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-
   },
   homeTitle: {
     color: "white",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-
   },
 
   imageContainer: {
@@ -143,8 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     bottom: 80,
   },
-
-
 });
 
 export default Home;

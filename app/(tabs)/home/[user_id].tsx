@@ -17,21 +17,36 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      
+      <Image
+            source={require("../images/spotify-api-WHITE.png")}
+            style={{ width: 400, height: 300 }}
+          ></Image>
+            
    <SafeAreaView style={styles.bottomContainer}>
     <SafeAreaView style={styles.headingContainer}> 
-      <Text style={styles.homeTitle}>Home Page</Text>
-      <Text style={styles.buttonText}>User ID: {user_id}</Text>
+      <Text style={styles.homeTitle}>Home</Text>
+      
     </SafeAreaView>  
-
+<Text style={styles.userId}>User ID: {user_id}</Text>
       <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
         <Text style={styles.buttonText}>
-        Search        
+        Search
         </Text>
+  
+      </Link>
+      <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
+        <Text style={styles.buttonText}>
+        Favorites 
+        <Image
+              source={require("../images/white-star-icon-13227.png")}
+              style={{ width: 30, height: 30, backgroundColor: "transparent",}}
+            ></Image>     
+        </Text>
+        
       </Link>
       <Link href="/" style={styles.buttonStyle2}>
         <Text style={styles.buttonText}>
-        Back
+        Log Out
         </Text>
       </Link>
         </SafeAreaView>
@@ -130,11 +145,26 @@ const styles = StyleSheet.create({
   },
   homeTitle: {
     color: "white",
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
     textAlign: "center",
 
   },
+
+  userId: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+
+  },
+  
+  search:{
+    color: "white",
+    backgroundColor: "transparent",
+
+    },
+  
 
   imageContainer: {
     backgroundColor: "black",

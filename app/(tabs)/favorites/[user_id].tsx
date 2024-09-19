@@ -79,7 +79,11 @@ const Favorites = () => {
           Back
         </Link>
         <Text style={styles.titleText}>Favorites</Text>
-        <Text style={styles.logoutText}>Logout</Text>
+        <Link href={`/`} style={styles.logoutText}>
+          Logout
+        </Link>
+  
+  
       </View>
       {songs.length == 0 ? (
         <Text>No Favorited Songs</Text>
@@ -120,7 +124,13 @@ const Favorites = () => {
           columnWrapperStyle={styles.cardContainer}
         />
       )}
+
+        <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>Search</Text>
+        </Link>
     </SafeAreaView>
+
+    
   );
 };
 
@@ -208,6 +218,24 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: SCALE_FONT(20),
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  buttonStyle2: {
+    backgroundColor: "#1DB954",
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    margin: 10,
+    borderRadius: 35,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 300,
+    height: 75,
   },
 });
 

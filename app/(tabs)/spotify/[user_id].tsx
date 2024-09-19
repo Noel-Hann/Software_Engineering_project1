@@ -12,6 +12,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
+import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
+import { SQLiteAnyDatabase } from "expo-sqlite/build/NativeStatement";
 
 //this is the spotify page, this is where users will be able to seach and favorite songs
 
@@ -19,19 +21,122 @@ import { Link, useLocalSearchParams } from "expo-router";
 const CLIENT_ID = "9f775d066d7c4ea3b25d5c58a42ce2f9";
 const CLIENT_SECRET = "db8b9bd3f6644c78a1292403147dbfff";
 
-// Get screen width so it can the cards' width an be dynamically set
-const screenWidth = Dimensions.get("window").width;
-const numColumns = 2; // Number of columns to fit in each row
-const cardMargin = 10;
-const cardWidth = (screenWidth - cardMargin * (numColumns + 1)) / numColumns; // Dynamic card width formula
+//useing Dimensions library to scale sizes to different devices
+const { width, height } = Dimensions.get("window"); //width of the screen
+const SCALE_FONT = (size: number) => (width / 375) * size; //scaling the font
 
 const SpotifyComponent = () => {
   //useStates for getting input, acess token, and the info about the tracks that were searched
-  const [searchInput, setsearchInput] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-  const [tracksInfo, setTracksInfo] = useState<Track[]>([]);
+  const [searchInput, setsearchInput] = useState(""); //sets and keeps track of the user search input when searching for a song
+  const [accessToken, setAccessToken] = useState(""); //sets and keeps track of the acess token given by spotify api
+  const [tracksInfo, setTracksInfo] = useState<Track[]>([]); //sets and keeps track of all the tracks recieved from the api
+  const [searchTriggered, setSearchTriggered] = useState(false); //sets and keeps track when a search is triggered
 
-  const [searchTriggered, setSearchTriggered] = useState(false);
+  //intefaces for typescript
+  //User object defined
+  interface User {
+    id: number;
+    username: string;
+    password: string;
+  }
+  //track object defined
+  interface Track {
+    name: string;
+    id: string;
+    artist: string;
+    image: string;
+  }
+  //favorited song object defined
+  interface favSongObject {
+    song_id: string;
+    user_id: number;
+    song_name: string;
+    song_artist: string;
+    song_image: string;
+  }
+
+  const db = useSQLiteContext(); //getting context of sql db
+  const [users, setUsers] = useState<User[]>([]); //creating a user state of all users
+  const [currentSong, setCurrentSong] = useState<favSongObject>();
+
+  //useEffect first function called in react native
+  useEffect(() => {
+    console.log("In useEffect for SPOTIFY ROUTE users db...");
+    getUsers(); //getting the database of users
+    //getSongs(); //getting the database of songs
+  }, []);
+
+  const getUsers = async () => {
+    try {
+      const userRows = (await db.getAllAsync("SELECT * FROM users")) as User[]; //get all users querey
+      setUsers(userRows); //set user state with the database of users
+      console.log("Users row set: ", userRows);
+    } catch (error) {
+      console.log("Error while loading users : ", error);
+    }
+  };
+
+  //adds favorite song to a user
+  const addFavSong = async (songDetails: favSongObject) => {
+    console.log("in addFavSong, songDetails is: ", songDetails);
+    if (!songDetails) {
+      //if song is null, return
+      console.log("No song selected to add to favorites.");
+      return;
+    }
+
+    console.log("checking if user already favorited...");
+
+    //check is this user already favorited this song
+    const checkIfFavoritedByUserSatement = await db.getAllAsync(
+      `SELECT * FROM fav_songs WHERE user_id = ? AND song_id = ?`,
+      [songDetails.user_id, songDetails.song_id]
+    );
+
+    console.log("result of check STATEMENT: ", checkIfFavoritedByUserSatement);
+
+    //if the result has more than 0 objetcs, the user already favoried, so just return
+    if (checkIfFavoritedByUserSatement.length > 0) {
+      alert("You already favorited this song");
+      return;
+    }
+
+    //put the favotite song into the database for the user
+    const statement = await db.prepareAsync(
+      `INSERT INTO fav_songs (song_id, user_id, song_name, song_artist, song_image)  
+      VALUES(?,?,?,?,?)`
+    );
+    console.log("preparing to add song");
+    await statement.executeAsync([
+      songDetails.song_id,
+      songDetails.user_id,
+      songDetails.song_name,
+      songDetails.song_artist,
+      songDetails.song_image,
+    ]);
+    alert(
+      songDetails.song_name + " by " + songDetails.song_artist + " favorited"
+    );
+    console.log("song added?");
+    getFavSongs();
+    try {
+    } catch (error) {
+      console.log("Error while trying to add a favorite song : ", error);
+    }
+  };
+
+  //get the database of all favorited songs
+  const getFavSongs = async () => {
+    console.log("getting all fav songs");
+    try {
+      const songRows = (await db.getAllAsync(
+        "SELECT * FROM fav_songs"
+      )) as favSongObject[];
+      console.log("all favorited songs by al users: ", songRows);
+    } catch (error) {
+      console.log("Error while loading all songs : ", error);
+    }
+  };
 
   //this useEffect will get us an acess token for the spotify api
   useEffect(() => {
@@ -53,14 +158,6 @@ const SpotifyComponent = () => {
 
     console.log(accessToken);
   }, []);
-
-  //had to do this weird interface thing for typescript and make an interface
-  interface Track {
-    name: string;
-    id: string;
-    artist: string;
-    image: string;
-  }
 
   //search function that will actually search for songs in the api
   async function search() {
@@ -101,6 +198,66 @@ const SpotifyComponent = () => {
     setSearchTriggered(true);
   }
 
+  const logSongDetails = (track: Track) => {
+    console.log("Song ID:", track.id);
+    console.log("Song Name:", track.name);
+    console.log("Artist:", track.artist);
+    console.log("Image URL:", track.image);
+    console.log("User ID:", user_id);
+
+    const songDetails = {
+      song_id: track.id,
+      user_id: Number(user_id), // Ensure user_id is a number
+      song_name: track.name,
+      song_artist: track.artist,
+      song_image: track.image,
+    };
+
+    console.log("in log details songDetails is: ", songDetails);
+
+    addFavSong(songDetails);
+  };
+
+  const isFavorited = async (songID: string) => {
+    try {
+      const userID = Number(user_id);
+      const rows = await db.getAllAsync(
+        "SELECT * FROM fav_songs WHERE user_id = ? AND song_id = ?",
+        [userID, songID]
+      );
+      //setUsers(userRows);
+      console.log("checking for favorited song set set: ", rows);
+      if (rows.length > 0) {
+        console.log("this song is favorited");
+        return true;
+      } else {
+        console.log("this song is NOT favorited");
+        return false;
+      }
+    } catch (error) {
+      console.log(
+        "There was an error checking to see if a song was favorited: ",
+        error
+      );
+      return false;
+    }
+  };
+
+  const favoritedImages = {
+    favorited: require("../images/heart_FAVORITED.png"),
+    unfavorited: require("../images/heart_UNFAVORITED.png"),
+  };
+
+  const getFavoritedImage = async (id: string) => {
+    const isFavSong = await isFavorited(id);
+    switch (isFavSong) {
+      case true:
+        return favoritedImages.favorited;
+      default:
+        return favoritedImages.unfavorited;
+    }
+  };
+
   const { user_id } = useLocalSearchParams(); //to get the passed in user id
 
   return (
@@ -133,19 +290,24 @@ const SpotifyComponent = () => {
       <FlatList
         data={tracksInfo}
         keyExtractor={(item) => item.id}
-        numColumns={numColumns} // Display 2 cards per row
-        columnWrapperStyle={styles.columnWrapper}
+        numColumns={2} //only displaying 2 columns for the cards
+        columnWrapperStyle={styles.cardContainer}
         renderItem={({ item }) => (
-          <SafeAreaView>
-            <View style={[styles.card, { width: cardWidth }]}>
-              <Image source={{ uri: item.image }} style={styles.cardImage} />
-              <View style={styles.cardDetails}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
-                <Text style={styles.cardDetails}>{item.artist}</Text>
-                {/* <Text>Song ID: {item.id}</Text> */}
-              </View>
+          <View style={styles.card}>
+            <Image source={{ uri: item.image }} style={styles.cardImage} />
+            <View style={styles.cardDetails}>
+              <Text style={styles.cardTitle}>{item.name}</Text>
+              <Text style={styles.cardArtist}>{item.artist}</Text>
+              {/* <Text>Song ID: {item.id}</Text> */}
+
+              <Pressable
+                //style={styles.favButton}
+                onPress={() => logSongDetails(item)}
+              >
+                <Text style={styles.favButtonText}>❤️</Text>
+              </Pressable>
             </View>
-          </SafeAreaView>
+          </View>
         )}
       />
     </SafeAreaView>
@@ -155,49 +317,38 @@ const SpotifyComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: width * 0.05,
     justifyContent: "center",
     backgroundColor: "#202020",
-    paddingTop: 20,
+    //paddingTop: 20,
   },
   card: {
-    //width: 200,
-    //height: 300,
-    borderWidth: 1,
-    //borderColor: "#444444",
-    borderRadius: 25,
-    //shadowColor: "black",
-    //shadowOffset: { width: 5, height: 5 },
-    //shadowOpacity: 0.8,
-    //shadowRadius: 5,
-    marginBottom: 10,
-    margin: 10,
-    marginHorizontal: cardMargin / 2,
-    maxWidth: 200,
-    height: "auto",
-    overflow: "hidden",
     backgroundColor: "black",
+    borderRadius: 10,
+    width: width * 0.4,
+    alignSelf: "center",
+    marginHorizontal: width * 0.02,
+    overflow: "hidden",
   },
   columnWrapper: {
     justifyContent: "space-between",
     alignItems: "center",
-    right: 5,
+    //right: 5,
   },
   cardImage: {
     width: "100%",
-    aspectRatio: 1,
-    resizeMode: "cover",
+    height: height * 0.15,
   },
   cardDetails: {
-    padding: 10,
+    margin: width * 0.04,
     alignItems: "center",
+    alignContent: "center",
+    textAlign: "center",
     justifyContent: "center",
-    color: "white",
   },
   cardTitle: {
-    fontWeight: "bold",
-    fontSize: 16,
     color: "white",
+    fontWeight: "bold",
   },
   search: {
     backgroundColor: "#404040",
@@ -232,6 +383,34 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
+  },
+  cardArtist: {
+    color: "white",
+  },
+  cardContainer: {
+    justifyContent: "space-between",
+    marginBottom: height * 0.03,
+  },
+  favoritedHeartImage: {
+    width: width * 0.2,
+    height: height * 0.03,
+    resizeMode: "contain",
+    marginTop: height * 0.01,
+  },
+  favButton: {
+    width: width * 0.3,
+    height: height * 0.06,
+    backgroundColor: "#1DB954",
+    borderRadius: 25,
+    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "5%",
+  },
+  favButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: SCALE_FONT(20),
   },
 });
 

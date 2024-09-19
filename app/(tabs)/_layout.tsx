@@ -27,6 +27,13 @@ const RootLayout = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="favorites/[user_id]"
+          options={{
+            headerTitle: "Favorite Songs",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </SQLiteProvider>
   );

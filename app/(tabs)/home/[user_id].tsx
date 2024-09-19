@@ -16,6 +16,10 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+            source={require("../images/spotify-api-WHITE.png")}
+            style={{ width: 400, height: 300 }}
+          ></Image>
       <SafeAreaView style={styles.bottomContainer}>
         <SafeAreaView style={styles.headingContainer}>
           <Text style={styles.homeTitle}>Home Page</Text>
@@ -23,13 +27,23 @@ const Home = () => {
         </SafeAreaView>
 
         <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
-          <Text style={styles.buttonText}>Search</Text>
+          <Text style={styles.buttonText}>Search
+          <Image
+              source={require("../images/search-icon-png-9993.png")}
+              style={{ width: 30, height: 30, backgroundColor: "transparent",}}
+            ></Image>  
+          </Text>
         </Link>
         <Link href={`/favorites/${user_id}`} style={styles.buttonStyle2}>
-          <Text style={styles.buttonText}>My Favorites</Text>
+          <Text style={styles.buttonText}>My Favorites
+          <Image
+              source={require("../images/white-star-icon-13227.png")}
+              style={{ width: 30, height: 30, backgroundColor: "transparent",}}
+            ></Image>  
+          </Text>
         </Link>
         <Link href="/" style={styles.buttonStyle2}>
-          <Text style={styles.buttonText}>Back</Text>
+          <Text style={styles.buttonText}>Log Out</Text>
         </Link>
       </SafeAreaView>
     </SafeAreaView>

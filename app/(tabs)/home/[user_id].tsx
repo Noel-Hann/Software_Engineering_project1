@@ -4,6 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
 import { SLOPE_FACTOR } from "react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils";
 import { useSQLiteContext } from "expo-sqlite";
+// import PlaylistPage from "./playlist";
+// import playlist from "./playlist";
         
 interface User {
   id: number;
@@ -34,6 +36,11 @@ const Home = () => {
         Back
         </Text>
       </Link>
+      {/* <Link href={`/home/${playlist}`} style={styles.buttonStyle2}>
+        <Text style={styles.buttonText}>
+        Back
+        </Text>
+      </Link> */}
         </SafeAreaView>
     </SafeAreaView>
   );

@@ -27,6 +27,13 @@ const RootLayout = () => {
             headerShown: false,
           }}
         />
+        {/* <Stack.Screen
+          name="PlayList/playlist"
+          options={{
+            headerTitle: "Play list pag",
+            headerShown: false,
+          }}
+        /> */}
       </Stack>
     </SQLiteProvider>
   );

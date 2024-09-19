@@ -36,11 +36,7 @@ const Home = () => {
         Back
         </Text>
       </Link>
-      {/* <Link href={`/home/${playlist}`} style={styles.buttonStyle2}>
-        <Text style={styles.buttonText}>
-        Back
-        </Text>
-      </Link> */}
+
         </SafeAreaView>
     </SafeAreaView>
   );

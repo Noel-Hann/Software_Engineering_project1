@@ -13,6 +13,7 @@ import {
   View,
   FlatList,
   Pressable,
+  Dimensions,
 } from "react-native";
 
 import { Link, router } from "expo-router";
@@ -216,7 +217,7 @@ export default function HomeScreen() {
         <View style={styles.imageContainer}>
           <Image
             source={require("./images/spotify-api-BLACK.png")}
-            style={{ width: 400, height: 300 }}
+            style={{ width: width * 1, height: height * 0.5 }}
           ></Image>
         </View>
 
@@ -481,27 +482,17 @@ const UserContent: React.FC<UserContentProps> = ({
         closeModal={closeCreateAccountModal}
         logInUser={logInUser}
       />
-      {/* {users.length == 0 ? (
-        <Text>No Users to load</Text>
-      ) : (
-        <FlatList
-          data={users}
-          renderItem={({ item }) => (
-            <Text>
-              ID: {item.id} Username: {item.username} Password: {item.password}
-            </Text>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      )} */}
     </View>
   );
 };
 
+//useing Dimensions library to scale sizes to different devices
+const { width, height } = Dimensions.get("window"); //width of the screen
+const SCALE_FONT = (size: number) => (width / 375) * size; //scaling the font
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
     alignItems: "center",
     backgroundColor: "#1DB954",
   },
@@ -509,77 +500,79 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
   },
   modalContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: "100%",
+    //position: "absolute",
+    //top: "0%",
+    //left: "0%",
+    //right: "0%",
+    //height: "100%",
     alignItems: "center",
-    padding: 20,
+    alignContent: "center",
+    //justifyContent: "center",
+    padding: width * 0.05,
     flex: 1,
     backgroundColor: "#303030",
     borderTopStartRadius: 25,
     borderTopEndRadius: 25,
   },
   bottomContainer: {
-    left: 0,
-    right: 0,
+    left: "0%",
+    right: "0%",
     flex: 1,
-    justifyContent: "center",
+    //justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
-    bottom: 0,
+    bottom: "0%",
     position: "absolute",
     borderTopStartRadius: 35,
     borderTopEndRadius: 35,
   },
-  buttonStyle: {
-    backgroundColor: "#1DB954",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    margin: 10,
-    borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "50%",
-  },
+  // buttonStyle: {
+  //   backgroundColor: "#1DB954",
+  //   paddingVertical: 12,
+  //   paddingHorizontal: 24,
+  //   margin: 10,
+  //   borderRadius: 25,
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   width: "50%",
+  // },
   buttonText: {
     color: "white",
-    fontSize: 24,
+    fontSize: SCALE_FONT(24),
     fontWeight: "bold",
   },
   buttonStyle2: {
     backgroundColor: "#1DB954",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    margin: 10,
+    //paddingVertical: 12,
+    //paddingHorizontal: 24,
+    margin: width * 0.02,
     borderRadius: 35,
     alignItems: "center",
     justifyContent: "center",
-    width: 300,
-    height: 75,
+    width: width * 0.6,
+    height: height * 0.08,
   },
   titleText: {
     color: "white",
-    fontSize: 28,
+    fontSize: SCALE_FONT(28),
     fontWeight: "bold",
-    margin: 0,
-    paddingBottom: 10,
+    //margin: 0,
+    paddingBottom: "2%",
   },
   modalTextTitle: {
     color: "white",
-    fontSize: 20,
-    margin: 0,
-    paddingBottom: 10,
+    fontSize: SCALE_FONT(20),
+    margin: "0%",
+    //paddingBottom: 10,
     fontWeight: "bold",
   },
   inputContainer: {
     width: 300,
     backgroundColor: "#404040",
     borderRadius: 10,
-    padding: 10,
+    padding: width * 0.03,
     marginVertical: 10,
-    // alignItems: "flex-start",
+    //alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
   },
@@ -603,10 +596,10 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: "white",
-    fontSize: 20,
-    margin: 0,
-    paddingBottom: 10,
-    right: 25,
+    fontSize: SCALE_FONT(20),
+    margin: "0%",
+    // paddingBottom: "5%",
+    right: "75%",
   },
   modalButton: {
     backgroundColor: "#1DB954",
@@ -623,7 +616,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-    bottom: 80,
+    bottom: "10%",
   },
   input: {
     backgroundColor: "white",

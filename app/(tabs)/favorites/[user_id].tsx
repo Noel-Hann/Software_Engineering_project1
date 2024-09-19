@@ -106,10 +106,11 @@ const Favorites = () => {
                     removeSong(item.user_id, item.song_id);
                   }}
                 >
-                  <Image
+                  {/* <Image
                     style={styles.favoritedHeartImage}
                     source={require("../images/heart_FAVORITED.png")}
-                  ></Image>
+                  ></Image> */}
+                  <Text style={styles.unfavoriteTextEmoji}>💔</Text>
                 </Pressable>
               </View>
             </View>
@@ -202,6 +203,11 @@ const styles = StyleSheet.create({
     height: height * 0.03,
     resizeMode: "contain",
     marginTop: height * 0.01,
+  },
+  unfavoriteTextEmoji: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: SCALE_FONT(20),
   },
 });
 

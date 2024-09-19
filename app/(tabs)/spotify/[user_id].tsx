@@ -265,6 +265,9 @@ const SpotifyComponent = () => {
       <Link href={`/home/${user_id}`} style={styles.modalTextTitle}>
         Back
       </Link>
+      <Link href={`/favorites/${user_id}`} style={styles.favText}>
+          Favorites
+        </Link>
 
       <View style={styles.flex}>
         <TextInput
@@ -411,6 +414,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: SCALE_FONT(20),
+  },
+
+  favText: {
+    color: "white",
+    fontSize: 20,
+    margin: 0,
+    paddingBottom: 10,
+    fontWeight: "bold", 
+    alignItems: "center",
+    textAlign: "right",
   },
 });
 

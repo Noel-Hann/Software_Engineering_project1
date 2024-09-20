@@ -119,6 +119,7 @@ const UserForm: React.FC<UserFormProps> = ({
   );
 };
 
+
 //loginForm component
 const LoginForm: React.FC<LoginFormProps> = ({ logInUser, closeModal }) => {
   const [user, setUser] = useState<NewUser>({ username: "", password: "" });
@@ -167,7 +168,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ logInUser, closeModal }) => {
   );
 };
 
-export default function HomeScreen() {
+
+ export default function HomeScreen() {
+
+  //return;//todo remove this
   //setting username and password inputs to an empty string
   const [userNameInput, setUserNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -393,7 +397,7 @@ const SignInContent: React.FC<SignInContentProps> = ({ closeSignInModal }) => {
   );
 };
 
-const UserContent: React.FC<UserContentProps> = ({
+export const UserContent: React.FC<UserContentProps> = ({
   closeCreateAccountModal,
 }) => {
   console.log("In UserContent");
@@ -440,23 +444,24 @@ const UserContent: React.FC<UserContentProps> = ({
   };
 
   //function to add a user
-  const addUser = async (newUser: NewUser) => {
+  const addLocalUser = async (newUser: NewUser) => {
     try {
+      console.log("start")
       if (newUser.username.length == 0 || newUser.password.length == 0) {
         alert("Please enter all fields");
         return;
       }
-
+      console.log("1");
       const existingUsers = (await db.getAllAsync(
         "SELECT username FROM users"
       )) as { username: string }[];
       const usernames = existingUsers.map((user) => user.username);
-
+      console.log("2");
       if (usernames.includes(newUser.username)) {
         alert("Username is taken");
         return;
       }
-
+      console.log("3")
       const statement = await db.prepareAsync(
         "INSERT INTO users (username, password) VALUES(?,?)"
       );

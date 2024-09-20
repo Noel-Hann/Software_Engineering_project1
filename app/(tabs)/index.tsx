@@ -444,7 +444,7 @@ export const UserContent: React.FC<UserContentProps> = ({
   };
 
   //function to add a user
-  const addLocalUser = async (newUser: NewUser) => {
+  const addUser = async (newUser: NewUser) => {
     try {
       console.log("start")
       if (newUser.username.length == 0 || newUser.password.length == 0) {

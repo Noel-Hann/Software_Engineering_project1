@@ -18,6 +18,7 @@ const RootLayout = () => {
           name="home/[user_id]"
           options={{
             headerTitle: "Home Page",
+            headerShown: false,
           }}
         />
         <Stack.Screen

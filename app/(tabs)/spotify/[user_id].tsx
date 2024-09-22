@@ -262,12 +262,15 @@ const SpotifyComponent = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Link href={`/home/${user_id}`} style={styles.modalTextTitle}>
-        Back
-      </Link>
-      <Link href={`/favorites/${user_id}`} style={styles.favText}>
+      <View style={styles.topModal}>
+        <Link href={`/home/${user_id}`} style={styles.modalTextTitle}>
+          Back
+        </Link>
+
+        <Link href={`/favorites/${user_id}`} style={styles.modalTextTitle}>
           Favorites
         </Link>
+      </View>
 
       <View style={styles.flex}>
         <TextInput
@@ -421,9 +424,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 0,
     paddingBottom: 10,
-    fontWeight: "bold", 
+    fontWeight: "bold",
     alignItems: "center",
     textAlign: "right",
+  },
+  topModal: {
+    // backgroundColor: "black",
+    width: "100%",
+    height: "5%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignSelf: "center",
   },
 });
 

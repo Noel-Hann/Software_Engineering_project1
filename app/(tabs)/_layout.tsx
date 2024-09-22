@@ -18,6 +18,7 @@ const RootLayout = () => {
           name="home/[user_id]"
           options={{
             headerTitle: "Home Page",
+            headerShown: false,
           }}
         />
         <Stack.Screen
@@ -28,6 +29,13 @@ const RootLayout = () => {
           }}
         />
 
+        <Stack.Screen
+          name="favorites/[user_id]"
+          options={{
+            headerTitle: "Favorite Songs",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </SQLiteProvider>
   );

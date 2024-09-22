@@ -1,43 +1,55 @@
-import { View, Text, StyleSheet, Image } from "react-native";
-import React,  { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
 import { SLOPE_FACTOR } from "react-native-reanimated/lib/typescript/reanimated2/animation/decay/utils";
 import { useSQLiteContext } from "expo-sqlite";
-// import PlaylistPage from "./playlist";
-// import playlist from "./playlist";
-        
+
 interface User {
   id: number;
   username: string;
   password: string;
 }
 
-
 const Home = () => {
   const { user_id } = useLocalSearchParams();
 
   return (
     <SafeAreaView style={styles.container}>
-      
-   <SafeAreaView style={styles.bottomContainer}>
-    <SafeAreaView style={styles.headingContainer}> 
-      <Text style={styles.homeTitle}>Home Page</Text>
-      <Text style={styles.buttonText}>User ID: {user_id}</Text>
-    </SafeAreaView>  
 
-      <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
-        <Text style={styles.buttonText}>
-        Search        
-        </Text>
-      </Link>
-      <Link href="/" style={styles.buttonStyle2}>
-        <Text style={styles.buttonText}>
-        Back
-        </Text>
-      </Link>
+      <SafeAreaView style={styles.spotifyImageContainer}>
+        <Image
+          source={require("../images/spotify-api-WHITE.png")}
+          style={styles.spotifyImage}
+        ></Image>
+      </SafeAreaView>
 
-        </SafeAreaView>
+      <SafeAreaView style={styles.bottomContainer}>
+        <Text style={styles.titleText}>Home Page</Text>
+        {/* <Text style={styles.titleText}>User ID: {user_id}</Text> */}
+
+        <Link href={`/spotify/${user_id}`} style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>
+            Search
+            <Image
+              source={require("../images/search-icon-png-9993.png")}
+              style={{ width: 30, height: 30, backgroundColor: "transparent" }}
+            ></Image>
+          </Text>
+        </Link>
+        <Link href={`/favorites/${user_id}`} style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>
+            My Favorites
+            <Image
+              source={require("../images/white-star-icon-13227.png")}
+              style={{ width: 30, height: 30, backgroundColor: "transparent" }}
+            ></Image>
+          </Text>
+        </Link>
+        <Link href="/" style={styles.buttonStyle2}>
+          <Text style={styles.buttonText}>Log Out</Text>
+        </Link>
+      </SafeAreaView>
     </SafeAreaView>
   );
 };
@@ -65,17 +77,30 @@ const db = async () => {
   }, []);
 };
 
+//useing Dimensions library to scale sizes to different devices
+const { width, height } = Dimensions.get("window"); //width of the screen
+const SCALE_FONT = (size: number) => (width / 375) * size; //scaling the font
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1DB954",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    margin: 10,
     alignItems: "center",
-    height:"100%",
-
+    height: "100%",
   },
-  
+  spotifyImageContainer: {
+    //backgroundColor: "black",
+    width: "80%",
+    height: "50%",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    margin: width * 0.05,
+  },
+  spotifyImage: {
+    width: "100%",
+    height: "100%",
+  },
+
   modalContainer: {
     position: "absolute",
     top: 0,
@@ -90,25 +115,25 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 25,
   },
 
-  headingContainer:{
+  headingContainer: {
     position: "absolute",
     top: 10,
     left: 0,
     right: 0,
     textAlign: "center",
-
   },
 
   bottomContainer: {
-    marginTop: "15%",
-    marginBottom: "15%",
+    left: "0%",
+    right: "0%",
     flex: 1,
-    width: "80%",
-    justifyContent: "center",
+    //justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
-    borderRadius: 20,
-    
+    bottom: "0%",
+    position: "absolute",
+    borderTopStartRadius: 35,
+    borderTopEndRadius: 35,
   },
 
   buttonStyle2: {
@@ -117,7 +142,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     margin: 10,
     borderRadius: 35,
-    textAlign:"center",
+    textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
     width: 300,
@@ -126,28 +151,23 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: "white",
-    fontSize: 24,
+    fontSize: SCALE_FONT(24),
     fontWeight: "bold",
-    textAlign: "center",
-
   },
   homeTitle: {
     color: "white",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-
   },
 
-  imageContainer: {
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-    bottom: 80,
+  titleText: {
+    color: "white",
+    fontSize: SCALE_FONT(28),
+    fontWeight: "bold",
+    //margin: 0,
+    paddingBottom: "2%",
   },
-
-
 });
 
 export default Home;

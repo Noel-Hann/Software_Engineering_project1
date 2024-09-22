@@ -28,6 +28,7 @@ const RootLayout = () => {
             headerShown: false,
           }}
         />
+
         <Stack.Screen
           name="favorites/[user_id]"
           options={{

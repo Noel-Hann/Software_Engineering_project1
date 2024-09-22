@@ -12,8 +12,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, useLocalSearchParams } from "expo-router";
+
+import RNPickerSelect from 'react-native-picker-select';
 import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import { SQLiteAnyDatabase } from "expo-sqlite/build/NativeStatement";
+
 
 //this is the spotify page, this is where users will be able to seach and favorite songs
 
@@ -138,6 +141,8 @@ const SpotifyComponent = () => {
     }
   };
 
+  const [selectedGenre, setSelectedGenre] = useState("");
+
   //this useEffect will get us an acess token for the spotify api
   useEffect(() => {
     var authParams = {
@@ -174,8 +179,16 @@ const SpotifyComponent = () => {
         Authorization: "Bearer " + accessToken,
       },
     };
+    
+    const genreFilter = selectedGenre ? `&genre=${selectedGenre}` : '';
+
+    // const response = await fetch(
+    //   "https://api.spotify.com/v1/search?q=" + searchInput + "&type=track",
+    //   trackParams
+    // );
+    //test on the search 
     const response = await fetch(
-      "https://api.spotify.com/v1/search?q=" + searchInput + "&type=track",
+    "https://api.spotify.com/v1/search?q=${searchInput}${genreFilter}&type=track",
       trackParams
     );
     const data = await response.json();
@@ -272,7 +285,7 @@ const SpotifyComponent = () => {
         </Link>
       </View>
 
-      <View style={styles.flex}>
+      <View style={styles.searchContainer}>
         <TextInput
           placeholder="Search for a song"
           placeholderTextColor="white"
@@ -288,6 +301,18 @@ const SpotifyComponent = () => {
           ></Image>
         </Pressable>
       </View>
+
+    <View style={styles.pickerContainer}>
+      <RNPickerSelect
+        onValueChange ={(value) => setSelectedGenre(value)}
+        items={[
+          {label: "All", value: ''},
+          {label: "Rock", value: 'rock'}
+        ]}
+        placeholder = {{label: 'select genre' , value: ''}}
+        style={pickerSelectStyles}
+        />
+        </View>
 
       {searchTriggered ? (
         <Text style={styles.searchText}>Results for {searchInput}</Text>
@@ -368,14 +393,23 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
   },
-  flex: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    paddingTop: 15,
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+  pickerContainer: {
+    flexDirection: 'column',
+    marginTop: 10,
+    width: '100%',
+  },
+  // flex: {
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   width: "100%",
+  //   paddingTop: 15,
+  // },
   modalTextTitle: {
     color: "white",
     fontSize: 20,
@@ -436,6 +470,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "center",
+  },
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'white',
+    paddingRight: 30,
+    backgroundColor: '#404040',
+    marginTop: 10,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 8,
+    color: 'white',
+    backgroundColor: '#404040',
+    marginTop: 10,
   },
 });
 

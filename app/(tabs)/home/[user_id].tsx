@@ -16,6 +16,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+
       <SafeAreaView style={styles.spotifyImageContainer}>
         <Image
           source={require("../images/spotify-api-WHITE.png")}
